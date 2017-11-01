@@ -1,0 +1,75 @@
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+function isEmpty(obj) {
+    if (obj == null) return true;
+
+    if (obj.length > 0)    return false;
+    if (obj.length === 0)  return true;
+
+    for (var key in obj) {
+        if (hasOwnProperty.call(obj, key)) return false;
+    }
+
+    return true;
+}
+
+function checkParams(obj) {
+	if (isEmpty(obj)||isEmpty(obj.project_id)||isEmpty(obj.platform)||obj.audience) {
+		return false;
+	}
+	return true;
+}
+
+function main() {
+	var obj = JSON.parse(tags);
+	if (checkParams(obj)) {
+		return false;
+	}
+
+	var platform = '%s';
+	var projectId = '%s';
+	var tag = %s;
+	var tag_and = %s;
+	var alias = '%s';
+
+	if (!isEmpty(platform)&&obj.platform!=platform) {
+		return false;
+	}
+
+	if (!isEmpty(projectId)&&obj.project_id!=projectId) {
+		return false;
+	}
+	
+	if (!isEmpty(alias)&&obj.audience.alias!=alias) {
+		return false;
+	}
+	
+	if (!isEmpty(tag)) {
+		if (isEmpty(obj.audience.tags)) {
+			return false;
+		}
+		var flag = 0;
+		for (var i = 0,len = obj.audience.tags.length; i < len;i++) {
+			if (tag.indexOf(obj.audience.tags[i])>-1) {
+				flag = 1;
+				break;
+			}
+		}
+		if (flag===0) {
+			return false;
+		}
+	}
+	
+
+	if (!isEmpty(tag_and)) {
+		for (var i = 0,len = tag_and.length; i < len;i++) {
+			if (obj.audience.tags.indexOf(tag_and[i])<0) {
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
+main()
